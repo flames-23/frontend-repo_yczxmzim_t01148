@@ -1,28 +1,28 @@
-import { useState } from 'react'
+import React, { useRef } from 'react';
+import HeroScene from './components/HeroScene';
+import SectionJourney from './components/SectionJourney';
+import RadialMenu from './components/RadialMenu';
+import ProgressRail from './components/ProgressRail';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const mindRef = useRef(null);
+
+  const handleStart = () => {
+    const el = document.getElementById('mind');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
+    <div className="relative min-h-screen bg-white text-slate-900">
+      <RadialMenu />
+      <ProgressRail />
+      <HeroScene onCTAClick={handleStart} />
+      <SectionJourney ref={mindRef} />
+      <footer className="bg-white/80 py-10 text-center text-sm text-slate-500">
+        © {new Date().getFullYear()} LifeSkillSphere. Built for calm growth.
+      </footer>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
