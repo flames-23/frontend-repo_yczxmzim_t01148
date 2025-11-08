@@ -3,6 +3,7 @@ import HeroScene from './components/HeroScene';
 import SectionJourney from './components/SectionJourney';
 import RadialMenu from './components/RadialMenu';
 import ProgressRail from './components/ProgressRail';
+import AnimatedBackground from './components/AnimatedBackground';
 
 const App = () => {
   const firstSectionRef = useRef(null);
@@ -13,7 +14,9 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-950">
+    <div className="relative min-h-screen w-full bg-slate-950">
+      <AnimatedBackground />
+
       <RadialMenu />
       <ProgressRail />
 
