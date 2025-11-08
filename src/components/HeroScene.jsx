@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Spline from '@splinetool/react-spline';
+import ErrorBoundary from './ErrorBoundary';
 
 const HeroScene = ({ onStart }) => {
+  const [isClient, setIsClient] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    // Ensure Spline only mounts on client and allow Brave to settle WebGL context
+    const t = setTimeout(() => setIsClient(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <section id="top" className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 text-white">
       {/* 3D Scene */}
       <div className="absolute inset-0">
-        <Spline scene="https://prod.spline.design/2Pz0HcxqkD1oS3S0/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+        {!failed && isClient && (
+          <ErrorBoundary fallback={null}>
+            <Spline
+              scene="https://prod.spline.design/2Pz0HcxqkD1oS3S0/scene.splinecode"
+              style={{ width: '100%', height: '100%' }}
+              onError={() => setFailed(true)}
+            />
+          </ErrorBoundary>
+        )}
+        {/* Graceful fallback if Spline fails (e.g., Brave Shields/WebGL) */}
+        {(failed || !isClient) && (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-600/20 via-fuchsia-500/10 to-emerald-500/20" />
+        )}
       </div>
 
       {/* Subtle gradient veil that doesn't block interaction */}
