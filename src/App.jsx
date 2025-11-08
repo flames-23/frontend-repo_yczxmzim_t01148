@@ -5,22 +5,21 @@ import RadialMenu from './components/RadialMenu';
 import ProgressRail from './components/ProgressRail';
 
 const App = () => {
-  const mindRef = useRef(null);
+  const firstSectionRef = useRef(null);
 
   const handleStart = () => {
     const el = document.getElementById('mind');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <div className="relative min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen w-full bg-slate-950">
       <RadialMenu />
       <ProgressRail />
-      <HeroScene onCTAClick={handleStart} />
-      <SectionJourney ref={mindRef} />
-      <footer className="bg-white/80 py-10 text-center text-sm text-slate-500">
-        © {new Date().getFullYear()} LifeSkillSphere. Built for calm growth.
-      </footer>
+
+      <HeroScene onStart={handleStart} />
+
+      <SectionJourney ref={firstSectionRef} />
     </div>
   );
 };

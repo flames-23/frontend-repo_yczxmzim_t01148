@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
-const items = [
+const links = [
   { id: 'mind', label: 'Mind' },
   { id: 'emotions', label: 'Emotions' },
   { id: 'social', label: 'Social' },
@@ -10,33 +9,54 @@ const items = [
 
 const RadialMenu = () => {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState('');
 
-  const goTo = (id) => {
+  useEffect(() => {
+    const handler = () => setOpen(false);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  useEffect(() => {
+    const sections = links.map((l) => document.getElementById(l.id)).filter(Boolean);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(visible.target.id);
+      },
+      { threshold: [0.2, 0.4, 0.6] }
+    );
+    sections.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  const scrollTo = (id) => {
     const el = document.getElementById(id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth' });
-    setOpen(false);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <div className="fixed right-6 top-6 z-50">
+    <div className="fixed right-4 top-4 z-50">
       <button
-        aria-label="Open Menu"
+        aria-label="Open menu"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow backdrop-blur hover:bg-white"
+        className="rounded-full bg-white/90 px-4 py-2 text-slate-900 shadow"
       >
-        {open ? <X /> : <Menu />}
+        Menu
       </button>
-
       {open && (
-        <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-white/90 p-3 shadow-lg backdrop-blur">
-          {items.map((it) => (
+        <div className="mt-3 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-slate-900/80 p-3 text-sm text-white backdrop-blur">
+          {links.map((l) => (
             <button
-              key={it.id}
-              onClick={() => goTo(it.id)}
-              className="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+              key={l.id}
+              onClick={() => scrollTo(l.id)}
+              className={`rounded-md px-3 py-2 text-left transition ${
+                active === l.id ? 'bg-white/20' : 'hover:bg-white/10'
+              }`}
             >
-              {it.label}
+              {l.label}
             </button>
           ))}
         </div>

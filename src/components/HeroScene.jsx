@@ -1,71 +1,37 @@
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 
-const HeroScene = ({ onCTAClick }) => {
-  const prefersReducedMotion = useReducedMotion();
-
+const HeroScene = ({ onStart }) => {
   return (
-    <section id="intro" className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-sky-50 via-white to-sky-100">
+    <section id="top" className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 text-white">
+      {/* 3D Scene */}
       <div className="absolute inset-0">
-        <Spline
-          scene="https://prod.spline.design/3bq8wJSWwQj8S3gZ/scene.splinecode"
-          style={{ width: '100%', height: '100%' }}
-        />
+        <Spline scene="https://prod.spline.design/2Pz0HcxqkD1oS3S0/scene.splinecode" style={{ width: '100%', height: '100%' }} />
       </div>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white/70" />
+      {/* Subtle gradient veil that doesn't block interaction */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-900/30 to-slate-900/70" />
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="font-manrope text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl"
-        >
-          LifeSkillSphere — Journey Through Growth
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="mt-4 max-w-2xl text-lg text-slate-600"
-        >
-          Master the skills that shape your world. Scroll to begin your journey.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="mt-10"
-        >
+      {/* Content */}
+      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-6 text-center">
+        <h1 className="text-4xl font-bold leading-tight md:text-6xl">LifeSkillSphere</h1>
+        <p className="mt-4 max-w-2xl text-slate-200 md:text-lg">
+          Journey through growth across Mind, Emotions, Social, and Professional realms.
+        </p>
+        <div className="mt-8 flex gap-4">
           <button
-            onClick={onCTAClick}
-            className="rounded-full bg-sky-600 px-6 py-3 text-white shadow-lg shadow-sky-600/30 transition hover:-translate-y-0.5 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
+            onClick={onStart}
+            className="rounded-full bg-white/90 px-6 py-3 text-slate-900 shadow-lg shadow-slate-900/30 transition hover:bg-white"
           >
-            Start your LifeSkill Journey
+            Start the Journey
           </button>
-        </motion.div>
-
-        {!prefersReducedMotion && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1.2 }}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-500"
+          <a
+            href="#about"
+            className="rounded-full border border-white/30 px-6 py-3 text-white/90 backdrop-blur transition hover:border-white/50 hover:text-white"
           >
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ repeat: Infinity, duration: 1.6 }}
-              className="rounded-full border border-slate-300/60 p-2"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </motion.div>
-          </motion.div>
-        )}
+            Learn more
+          </a>
+        </div>
       </div>
     </section>
   );

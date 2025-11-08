@@ -1,156 +1,71 @@
 import React, { useEffect, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { Brain, Heart, Users, Briefcase } from 'lucide-react';
 
 const sections = [
-  {
-    id: 'mind',
-    title: 'Mind Skills',
-    subtitle: 'Focus • Problem-Solving',
-    colorFrom: 'from-sky-50',
-    colorTo: 'to-sky-100',
-    accent: 'text-sky-700',
-    icon: Brain,
-    description:
-      'Sharpen clarity and strengthen your ability to navigate complex challenges with calm focus.',
-    skills: [
-      { name: 'Focus', description: 'Train attention and reduce distractions.' },
-      { name: 'Problem-Solving', description: 'Structure decisions and think in systems.' },
-    ],
-  },
-  {
-    id: 'emotions',
-    title: 'Emotional Skills',
-    subtitle: 'Empathy • Resilience',
-    colorFrom: 'from-orange-50',
-    colorTo: 'to-rose-100',
-    accent: 'text-rose-700',
-    icon: Heart,
-    description:
-      'Grow emotional literacy, cultivate composure, and connect with others through authentic presence.',
-    skills: [
-      { name: 'Empathy', description: 'Read emotions and respond with care.' },
-      { name: 'Resilience', description: 'Build bounce-back capacity after stress.' },
-    ],
-  },
-  {
-    id: 'social',
-    title: 'Social Skills',
-    subtitle: 'Teamwork • Communication',
-    colorFrom: 'from-emerald-50',
-    colorTo: 'to-teal-100',
-    accent: 'text-emerald-700',
-    icon: Users,
-    description:
-      'Develop trust, collaboration, and clear communication that turns groups into teams.',
-    skills: [
-      { name: 'Teamwork', description: 'Align goals and create shared momentum.' },
-      { name: 'Communication', description: 'Listen deeply, speak clearly.' },
-    ],
-  },
-  {
-    id: 'professional',
-    title: 'Professional Skills',
-    subtitle: 'Leadership • Decision-Making',
-    colorFrom: 'from-indigo-50',
-    colorTo: 'to-violet-100',
-    accent: 'text-indigo-700',
-    icon: Briefcase,
-    description:
-      'Lead with confidence, make wise choices, and design systems that scale.',
-    skills: [
-      { name: 'Leadership', description: 'Inspire direction and empower others.' },
-      { name: 'Decision-Making', description: 'Use data and intuition to act with clarity.' },
-    ],
-  },
+  { id: 'mind', title: 'Mind', color: 'from-indigo-500/20 to-transparent', desc: 'Sharpen focus, critical thinking, and learning agility.' },
+  { id: 'emotions', title: 'Emotions', color: 'from-rose-500/20 to-transparent', desc: 'Build resilience, self-awareness, and calm under pressure.' },
+  { id: 'social', title: 'Social', color: 'from-emerald-500/20 to-transparent', desc: 'Grow empathy, communication, and collaboration.' },
+  { id: 'professional', title: 'Professional', color: 'from-amber-500/20 to-transparent', desc: 'Level up execution, leadership, and creative problem solving.' },
 ];
 
-const Section = ({ id, title, subtitle, colorFrom, colorTo, accent, icon: Icon, description, skills }) => {
-  const prefersReducedMotion = useReducedMotion();
-  const ref = useRef(null);
+const Card = ({ title, text }) => (
+  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur-md transition hover:bg-white/10">
+    <h4 className="text-lg font-semibold">{title}</h4>
+    <p className="mt-2 text-sm text-white/80">{text}</p>
+  </div>
+);
+
+const SectionJourney = () => {
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            el.classList.add('section-visible');
-          }
-        });
-      },
-      { threshold: 0.25 }
-    );
+    const reveal = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('opacity-100', 'translate-y-0');
+        }
+      });
+    };
 
-    observer.observe(el);
-    return () => observer.disconnect();
+    const io = new IntersectionObserver(reveal, { threshold: 0.2 });
+    const items = container.querySelectorAll('[data-reveal]');
+    items.forEach((el) => io.observe(el));
+
+    return () => io.disconnect();
   }, []);
 
   return (
-    <section
-      id={id}
-      ref={ref}
-      className={`relative min-h-screen w-full overflow-hidden bg-gradient-to-b ${colorFrom} ${colorTo}`}
-    >
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-24 sm:py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7 }}
-          className="flex flex-col items-center text-center"
-        >
-          <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/70 shadow ${accent}`}>
-            <Icon size={28} />
-          </div>
-          <h2 className="font-manrope text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-            {title}
-          </h2>
-          <p className="mt-2 text-base font-medium text-slate-600 sm:text-lg">{subtitle}</p>
-          <p className="mt-6 max-w-2xl text-slate-600">{description}</p>
-        </motion.div>
-
-        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
-          {skills.map((s) => (
-            <motion.div
-              key={s.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.6 }}
-              className="group relative overflow-hidden rounded-2xl bg-white/70 p-6 shadow backdrop-blur-sm transition hover:shadow-lg"
-            >
-              <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/40 via-transparent to-white/10" />
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-slate-900">{s.name}</h3>
-                  <p className="mt-1 text-sm text-slate-600">{s.description}</p>
-                </div>
-                {!prefersReducedMotion && (
-                  <motion.div
-                    className="h-10 w-10 rounded-full bg-slate-900/5"
-                    animate={{ scale: [1, 1.06, 1] }}
-                    transition={{ repeat: Infinity, duration: 2.6, ease: 'easeInOut' }}
-                  />
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const SectionJourney = () => {
-  return (
-    <div>
+    <section ref={containerRef} id="journey" className="relative w-full bg-slate-950 text-white">
       {sections.map((s) => (
-        <Section key={s.id} {...s} />
+        <div key={s.id} id={s.id} className="relative mx-auto min-h-[100svh] w-full max-w-6xl px-6 py-24">
+          <div className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${s.color}`} />
+
+          <div className="relative">
+            <h2 className="text-3xl font-bold md:text-5xl">{s.title}</h2>
+            <p className="mt-3 max-w-2xl text-white/80">{s.desc}</p>
+
+            <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+              <div data-reveal className="opacity-0 translate-y-6 transition-all duration-700">
+                <Card title="Foundations" text="Principles and mental models that underpin this area." />
+              </div>
+              <div data-reveal className="opacity-0 translate-y-6 transition-all duration-700 delay-100">
+                <Card title="Practice" text="Actionable exercises to build real skill." />
+              </div>
+              <div data-reveal className="opacity-0 translate-y-6 transition-all duration-700 delay-200">
+                <Card title="Reflection" text="Prompts to integrate learning with life." />
+              </div>
+            </div>
+          </div>
+        </div>
       ))}
-    </div>
+
+      {/* Footer ensures full scroll to the very bottom */}
+      <footer id="about" className="mx-auto w-full max-w-6xl px-6 py-16 text-center text-white/70">
+        <p>Made for curious minds. Keep exploring.</p>
+      </footer>
+    </section>
   );
 };
 
